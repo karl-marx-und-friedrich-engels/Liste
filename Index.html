@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Materialliste Generator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #1e1e1e;
+        color: #fff;
+        padding: 20px;
+    }
+    textarea {
+        width: 100%;
+        height: 200px;
+        margin-bottom: 10px;
+        background: #2b2b2b;
+        color: #fff;
+        border: 1px solid #555;
+        padding: 10px;
+    }
+    button {
+        padding: 10px 15px;
+        margin-right: 10px;
+        background: #4CAF50;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #45a049;
+    }
+    pre {
+        background: black;
+        padding: 15px;
+        overflow-x: auto;
+        border: 1px solid #555;
+    }
+</style>
+</head>
+<body>
+
+<h2>Materialliste Generator</h2>
+
+<p>Trage deine Items so ein (Item;Total):</p>
+
+<textarea id="input">
+Fichtenholzbretter;2118
+Steinziegel;1373
+Stein;1336
+</textarea>
+
+<br>
+<button onclick="generateTable()">Tabelle erstellen</button>
+<button onclick="copyTable()">Kopieren</button>
+
+<h3>Output:</h3>
+<pre id="output"></pre>
+
+<script>
+function pad(text, length) {
+    return text + " ".repeat(Math.max(0, length - text.length));
+}
+
+function generateTable() {
+    let input = document.getElementById("input").value.trim().split("\n");
+
+    let rows = input.map(line => {
+        let parts = line.split(";");
+        return {
+            item: parts[0],
+            total: parts[1] || "0"
+        };
+    });
+
+    let maxItemLength = Math.max(...rows.map(r => r.item.length), 25);
+
+    let header = "+-" + "-".repeat(maxItemLength) + "-+-------+---------+-----------+";
+    let title = "| " + pad("Material List", maxItemLength) + " | Total | Missing | Available |";
+
+    let table = header + "\n" + title + "\n" + header + "\n";
+
+    rows.forEach(r => {
+        table += "| " + pad(r.item, maxItemLength) +
+                 " | " + pad(r.total, 5) +
+                 " | " + pad(r.total, 7) +
+                 " | " + pad("0", 9) + " |\n";
+    });
+
+    table += header;
+
+    document.getElementById("output").textContent = table;
+}
+
+function copyTable() {
+    let text = document.getElementById("output").textContent;
+    navigator.clipboard.writeText(text);
+    alert("Kopiert!");
+}
+</script>
+
+</body>
+</html>

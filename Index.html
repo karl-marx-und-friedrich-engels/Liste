@@ -95,6 +95,12 @@ function copyTable() {
     navigator.clipboard.writeText(text);
     alert("Kopiert!");
 }
+
+// ✅ Auto-Update beim Tippen
+document.getElementById("input").addEventListener("input", generateTable);
+
+// ✅ Beim Laden direkt anzeigen
+window.onload = generateTable;
 </script>
 
 </body>
